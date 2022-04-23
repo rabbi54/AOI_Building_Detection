@@ -1,8 +1,38 @@
+{% extends 'base.html' %}
+{% block custom_style %}
+<style>
+    img {
+        border: 2px solid #C0C0C0;
+        padding: 5px;
+    }
+</style>
+{% endblock %}
+{% block title %}Image Upload Page{% endblock %}
 {% load crispy_forms_tags %}
-<div class='card card-body'>
-    <form method="POST" enctype="multipart/form-data">
-        {% csrf_token %}
-        {{ form|crispy}}
-        <input class="btn btn-info btn-block" type="submit" value="Submit">
-    </form>
+
+{% block content %}
+{% include 'topside.html' %}
+<div class="row my-4">
+    <div class="col-md-12">
+        {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">
+            {{ message }}
+        </div>
+        {% endfor %}
+        {% endif %}
+        <div class="card card-body">
+            <h5>Upload A Photo</h5>
+            <h6 class='text-danger'>*Please upload a tif photo</h6>
+            <hr>
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ form|crispy }}
+                <input class="btn btn-success btn-block" type="submit" value="Upload">
+            </form>
+        </div>
+    </div>
+    <div class="col-md-8">
+    </div>
 </div>
+{% endblock %}
