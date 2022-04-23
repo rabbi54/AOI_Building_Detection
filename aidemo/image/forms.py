@@ -5,4 +5,4 @@ from .models import SegmentModel
 class SegmentForm(forms.ModelForm):
     class Meta:
         model = SegmentModel
-        fields = ['inputFile',]
+        fields = ['inputFile','type']

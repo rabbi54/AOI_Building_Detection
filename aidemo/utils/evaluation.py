@@ -6,7 +6,7 @@ from django.core.files.images import ImageFile
 import matplotlib.pyplot as plt
 # %matplotlib inline
 from .segment_model import SegmentationModel
-
+from image.models import SegmentModel
 
 import numpy as np
 import cv2
@@ -39,6 +39,17 @@ def plot_results(test_data, image, score, figsize=(3,3)):
     ax1.imshow(building_score, vmin=0.0, vmax=1.0)
     ax1.set_title('Predicted Building Score') 
     
+
+    print(type(building_score))
+    # 640 x 480
+    # array = np.reshape(building_overlay_pred, (640, 480))
+
+    data = Image.fromarray(building_score)
+    mem_imge = io.BytesIO()
+    data.save(mem_imge, 'tiff')
+
+    output = ImageFile(mem_imge)
+
     ax2.imshow(building_overlay_pred)
     ax2.set_title('Input + Predicted Buildings') 
     
@@ -46,16 +57,20 @@ def plot_results(test_data, image, score, figsize=(3,3)):
     # plt.plot(xvalues, yvalues)
     plt.savefig(figure, format="png")
     content_file = ImageFile(figure)
-    return content_file
+    return content_file, output
     # # ax3.imshow(building_overlay_gt)
     # # ax3.set_title('Input + Ground Truth Buildings') 
     # plt.savefig('foo.png')
     # plt.show()
 
 
-def evaluate(image_path):
+def evaluate(image_path, type):
     mean = np.load(path.join(path.dirname(__file__), 'mean.npy'))
-    model = SegmentationModel(path.join(path.dirname(__file__), 'model_iter_3035'), mean)
+
+    if type == SegmentModel.TYPE_UNET:
+        model = SegmentationModel(path.join(path.dirname(__file__), 'model_iter_3035'), mean)
+    elif type == SegmentModel.TYPE_RESNET:
+        model = SegmentationModel(path.join(path.dirname(__file__), 'model_iter_2428'), mean)
 
     # image_path = path.join(path.dirname(__file__),'3band_AOI_1_RIO_img6931.tif')
 
